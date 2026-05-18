@@ -1,3 +1,3 @@
-# laloloops-skill
+# laloloops-skills
 
 Lalo Loops repository.

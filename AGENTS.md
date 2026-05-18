@@ -1,4 +1,4 @@
-# laloloops-skill — Agent Context
+# laloloops-skills — Agent Context
 
 ## Shared Rules
 
