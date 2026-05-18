@@ -1,3 +1,3 @@
 # laloloops-skill
 
-Private Lalo Loops repository.
+Lalo Loops repository.

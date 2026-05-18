@@ -37,7 +37,7 @@ Read `../laloloops-branding/brand/voice_guide.md` before making design or copy c
 
 - Do not force push unless explicitly asked.
 - Repository lives under `https://github.com/LaloLoops/`.
-- This repository is **private**.
+- This repository is **public** — audit every file before committing for PII or secrets.
 
 ---
 
