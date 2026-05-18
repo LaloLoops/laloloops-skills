@@ -1,46 +1,49 @@
-# laloloops-skills — Agent Context
+# laloloops-skills - Agent Context
 
-## Shared Rules
+This repository contains reusable agent skills and supporting instructions.
+Treat it as a portable skills collection: files should be useful outside the
+author's local machine and safe to publish.
 
-These rules are inherited from the parent workspace and **must** be followed in every interaction.
+Keep this file public-safe. Personal operating preferences, local account
+details, commit-author identity, and private publishing rules belong in global
+agent configuration outside the repository.
 
-### Git Author Identity
+## Repository Layout
 
-All commits use the project identity. Always use the local git author:
+Current layout:
 
+```text
+.
+├── AGENTS.md
+├── CLAUDE.md
+└── README.md
 ```
-Lalo Loops <laloloops@proton.me>
-```
 
-### No AI Co-authorship
+Add skill directories as the collection grows. A typical skill should have its
+own directory with a `SKILL.md` entry point plus any scripts, references, or
+assets it needs.
 
-- Never add `Co-Authored-By` trailers for any AI tool.
-- Never reference AI tools in commit messages.
+## Skill Authoring Rules
 
-### Human-sounding Commits
+- Make each skill self-contained and task-focused.
+- Keep trigger guidance explicit so agents know when to use the skill.
+- Prefer reusable scripts or templates over long instructions that agents must
+  retype.
+- Keep examples generic unless the skill is intentionally project-specific.
+- Do not include secrets, private paths, personal identifiers, unpublished
+  strategy, or local account assumptions.
+- If a skill needs local configuration, document the expected environment
+  variables or external files without committing real values.
 
-Imperative mood subject line, optional body explaining why. Write like a developer, not a bot.
+## Cross-Agent Setup
 
-### GitHub CLI
+- `AGENTS.md` is the shared public guidance.
+- `CLAUDE.md` imports `AGENTS.md` for Claude Code compatibility.
+- Private preferences should live in `~/.codex/AGENTS.md` for Codex and
+  `~/.claude/CLAUDE.md` for Claude Code.
+- Do not commit local overlays such as `AGENTS.local.md` or `CLAUDE.local.md`.
 
-Use `ghl` (not bare `gh`) for all GitHub CLI operations scoped to the LaloLoops account.
+## Verification
 
-### Privacy
-
-Never commit PII, personal references, credentials, API keys, or anything that could de-anonymize the person behind Lalo Loops. Audit every file before committing.
-
-### Brand Voice
-
-Read `../laloloops-branding/brand/voice_guide.md` before making design or copy changes. Respect the visual palette (orange `#E8872B`, cream `#FDF0DC`, black `#1A1A1A`) and tone.
-
-### Repository Settings
-
-- Do not force push unless explicitly asked.
-- Repository lives under `https://github.com/LaloLoops/`.
-- This repository is **public** — audit every file before committing for PII or secrets.
-
----
-
-## Project
-
-TBD — fill in once scope is decided.
+For documentation-only changes, review the rendered Markdown. For skill changes,
+test the workflow manually or with the relevant script before committing.
