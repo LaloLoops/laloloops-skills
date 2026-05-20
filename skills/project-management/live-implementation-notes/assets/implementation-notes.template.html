@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Implementation Notes</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f8;
+      --paper: #ffffff;
+      --ink: #1f2328;
+      --muted: #667085;
+      --line: #d0d7de;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --good: #247a4d;
+      --warn: #a56313;
+      --bad: #9f2d2d;
+      --info: #2f5f87;
+      --shadow: 0 18px 50px rgba(31, 35, 40, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 32px));
+      margin: 32px auto;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: start;
+      margin-bottom: 18px;
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: clamp(28px, 4vw, 46px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin-bottom: 14px;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+
+    .subtitle {
+      margin-bottom: 0;
+      color: var(--muted);
+      max-width: 70ch;
+    }
+
+    .meta {
+      display: grid;
+      gap: 8px;
+      min-width: 230px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f2f6ff;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .meta strong {
+      color: var(--ink);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.05fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    section {
+      margin-bottom: 18px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .focus {
+      border-left: 4px solid var(--accent);
+      padding: 14px 16px;
+      border-radius: 8px;
+      background: #f2f6ff;
+    }
+
+    .summary-list,
+    .log {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .summary-list,
+    .log {
+      display: grid;
+      gap: 10px;
+    }
+
+    .summary-list li,
+    .log li {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .summary-list li {
+      padding: 12px 14px;
+    }
+
+    .log li {
+      padding: 14px;
+    }
+
+    .entry-head {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .entry-head time {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      border: 1px solid currentColor;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .planned {
+      color: var(--info);
+      background: #eaf3f8;
+    }
+
+    .doing {
+      color: var(--accent-dark);
+      background: #eef4ff;
+    }
+
+    .done,
+    .verified {
+      color: var(--good);
+      background: #eaf7f0;
+    }
+
+    .blocked,
+    .risk {
+      color: var(--bad);
+      background: #fff0f0;
+    }
+
+    .changed,
+    .skipped {
+      color: var(--warn);
+      background: #fff5df;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    code {
+      border-radius: 5px;
+      padding: 2px 5px;
+      background: #f1f5f9;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      main {
+        width: min(100% - 20px, 680px);
+        margin: 20px auto;
+      }
+
+      header,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      header,
+      section {
+        padding: 18px;
+      }
+
+      .meta {
+        min-width: 0;
+      }
+
+      .entry-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Implementation Notes</h1>
+        <p class="subtitle">Live notes for <strong>{{task_name}}</strong>. This file is updated while implementation is in progress so decisions, changes, tradeoffs, and verification stay visible.</p>
+      </div>
+      <div class="meta" aria-label="Implementation metadata">
+        <div><span class="label">Status</span><strong>{{overall_status}}</strong></div>
+        <div><span class="label">Started</span><strong>{{started_at}}</strong></div>
+        <div><span class="label">Last updated</span><strong>{{last_updated_at}}</strong></div>
+        <div><span class="label">Owner</span><strong>{{agent_or_owner}}</strong></div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div>
+        <section id="overview" aria-labelledby="overview-title">
+          <h2 id="overview-title">Overview</h2>
+          <ul class="summary-list">
+            <li><span class="label">Goal</span>{{goal}}</li>
+            <li><span class="label">Scope</span>{{scope}}</li>
+            <li><span class="label">Out of scope</span>{{out_of_scope}}</li>
+            <li><span class="label">Key files</span>{{key_files}}</li>
+          </ul>
+        </section>
+
+        <section id="status" aria-labelledby="status-title">
+          <h2 id="status-title">Current Status</h2>
+          <div class="stack">
+            <div class="focus">
+              <div class="entry-head">
+                <span class="pill doing">Doing</span>
+                <time datetime="{{iso_timestamp}}">{{human_timestamp}}</time>
+              </div>
+              <h3>Current focus</h3>
+              <p>{{current_focus}}</p>
+            </div>
+            <ul class="summary-list">
+              <li><span class="label">Completed</span>{{completed_summary}}</li>
+              <li><span class="label">Next</span>{{next_step}}</li>
+              <li><span class="label">Blocked by</span>{{blocked_by}}</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="handoff" aria-labelledby="handoff-title">
+          <h2 id="handoff-title">Handoff Notes</h2>
+          <ul class="log">
+            <li>
+              <div class="entry-head">
+                <span class="pill planned">Planned</span>
+                <time datetime="{{iso_timestamp}}">{{human_timestamp}}</time>
+              </div>
+              <h3>{{handoff_title}}</h3>
+              <p>{{handoff_detail}}</p>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <div>
+        <section id="decisions" aria-labelledby="decisions-title">
+          <h2 id="decisions-title">Decision Log</h2>
+          <ul class="log">
+            <li>
+              <div class="entry-head">
+                <span class="pill planned">Planned</span>
+                <time datetime="{{iso_timestamp}}">{{human_timestamp}}</time>
+              </div>
+              <h3>{{decision_title}}</h3>
+              <p>{{decision_detail}}</p>
+            </li>
+          </ul>
+        </section>
+
+        <section id="changes" aria-labelledby="changes-title">
+          <h2 id="changes-title">Change Log</h2>
+          <ul class="log">
+            <li>
+              <div class="entry-head">
+                <span class="pill changed">Changed</span>
+                <time datetime="{{iso_timestamp}}">{{human_timestamp}}</time>
+              </div>
+              <h3>{{change_title}}</h3>
+              <p>{{change_detail}}</p>
+            </li>
+          </ul>
+        </section>
+
+        <section id="tradeoffs" aria-labelledby="tradeoffs-title">
+          <h2 id="tradeoffs-title">Tradeoffs And Risks</h2>
+          <ul class="log">
+            <li>
+              <div class="entry-head">
+                <span class="pill risk">Risk</span>
+                <time datetime="{{iso_timestamp}}">{{human_timestamp}}</time>
+              </div>
+              <h3>{{tradeoff_title}}</h3>
+              <p>{{tradeoff_detail}}</p>
+            </li>
+          </ul>
+        </section>
+
+        <section id="verification" aria-labelledby="verification-title">
+          <h2 id="verification-title">Verification</h2>
+          <ul class="log">
+            <li>
+              <div class="entry-head">
+                <span class="pill planned">Planned</span>
+                <time datetime="{{iso_timestamp}}">{{human_timestamp}}</time>
+              </div>
+              <h3>{{verification_title}}</h3>
+              <p>{{verification_detail}}</p>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <footer>
+      Keep this document factual. Do not record sensitive values or hidden reasoning.
+    </footer>
+  </main>
+</body>
+</html>

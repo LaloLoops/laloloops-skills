@@ -1,0 +1,4 @@
+interface:
+  display_name: "Journal Session Current"
+  short_description: "Turn the current session into journal ideas"
+  default_prompt: "Use $journal-session-current to turn this session into a generic development journal summary and content ideas."

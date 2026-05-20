@@ -1,0 +1,4 @@
+interface:
+  display_name: "Journal Session History"
+  short_description: "Summarize local agent session history"
+  default_prompt: "Use $journal-session-history to summarize today's local agent sessions."

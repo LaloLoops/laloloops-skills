@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Manage"
+  short_description: "Create, review, fix, and merge PRs"
+  default_prompt: "Use $pr-manage to create or manage the PR for this branch through review, checks, and merge."

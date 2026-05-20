@@ -1,0 +1,4 @@
+interface:
+  display_name: "Transparent Image Alpha"
+  short_description: "Turn chroma-key images into real-alpha assets"
+  default_prompt: "Use $transparent-image-alpha to generate a chroma-key source image and convert it into a validated transparent PNG."

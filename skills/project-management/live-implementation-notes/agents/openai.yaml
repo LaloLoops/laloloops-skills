@@ -1,0 +1,4 @@
+interface:
+  display_name: "Live Implementation Notes"
+  short_description: "Keep live HTML notes during implementation"
+  default_prompt: "Use $live-implementation-notes while implementing this task so decisions, changes, risks, and verification are tracked in a live notes file."

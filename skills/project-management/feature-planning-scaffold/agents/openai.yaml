@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Planning Scaffold"
+  short_description: "Create a planning directory for new work"
+  default_prompt: "Use $feature-planning-scaffold to create a planning directory, implementation plan, and progress tracker for this feature."

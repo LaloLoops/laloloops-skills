@@ -1,12 +1,12 @@
-# laloloops-skills - Agent Context
+# Agent Skills - Agent Context
 
 This repository contains reusable agent skills and supporting instructions.
 Treat it as a portable skills collection: files should be useful outside the
 author's local machine and safe to publish.
 
-Keep this file public-safe. Personal operating preferences, local account
-details, commit-author identity, and private publishing rules belong in global
-agent configuration outside the repository.
+Keep this file public-safe. Machine-specific preferences, account details,
+commit-author identity, and publishing rules belong in local configuration
+outside the repository.
 
 ## Repository Layout
 
@@ -16,7 +16,12 @@ Current layout:
 .
 ├── AGENTS.md
 ├── CLAUDE.md
-└── README.md
+├── README.md
+└── skills/
+    ├── content/
+    ├── git/
+    ├── media/
+    └── project-management/
 ```
 
 Add skill directories as the collection grows. A typical skill should have its
@@ -29,8 +34,8 @@ assets it needs.
 - Keep trigger guidance explicit so agents know when to use the skill.
 - Prefer reusable scripts or templates over long instructions that agents must
   retype.
-- Keep examples generic unless the skill is intentionally project-specific.
-- Do not include secrets, private paths, personal identifiers, unpublished
+- Keep examples generic unless the skill is intentionally specialized.
+- Do not include sensitive values, private paths, identifiers, unpublished
   strategy, or local account assumptions.
 - If a skill needs local configuration, document the expected environment
   variables or external files without committing real values.
@@ -39,8 +44,7 @@ assets it needs.
 
 - `AGENTS.md` is the shared public guidance.
 - `CLAUDE.md` imports `AGENTS.md` for Claude Code compatibility.
-- Private preferences should live in `~/.codex/AGENTS.md` for Codex and
-  `~/.claude/CLAUDE.md` for Claude Code.
+- Local preferences should live outside this repository.
 - Do not commit local overlays such as `AGENTS.local.md` or `CLAUDE.local.md`.
 
 ## Verification

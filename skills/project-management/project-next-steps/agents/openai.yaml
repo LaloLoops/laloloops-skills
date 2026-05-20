@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Next Steps"
+  short_description: "Rank what to work on next from project evidence"
+  default_prompt: "Use $project-next-steps to inspect project state and recommend the next work to tackle."
