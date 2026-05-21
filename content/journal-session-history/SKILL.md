@@ -17,21 +17,21 @@ finds.
 Default to today's local date unless the user gives a date.
 
 ```bash
-python3 skills/content/journal-session-history/scripts/journal_history.py --date YYYY-MM-DD --source all
+python3 content/journal-session-history/scripts/journal_history.py --date YYYY-MM-DD --source all
 ```
 
 Use inclusive ranges when the user asks for multiple days:
 
 ```bash
-python3 skills/content/journal-session-history/scripts/journal_history.py --date-from YYYY-MM-DD --date-to YYYY-MM-DD --source all
-python3 skills/content/journal-session-history/scripts/journal_history.py --date-from YYYY-MM-DD --source all
+python3 content/journal-session-history/scripts/journal_history.py --date-from YYYY-MM-DD --date-to YYYY-MM-DD --source all
+python3 content/journal-session-history/scripts/journal_history.py --date-from YYYY-MM-DD --source all
 ```
 
 If output is large, narrow it:
 
 ```bash
-python3 skills/content/journal-session-history/scripts/journal_history.py --source codex --max-items 40
-python3 skills/content/journal-session-history/scripts/journal_history.py --source claude --project-filter my-project
+python3 content/journal-session-history/scripts/journal_history.py --source codex --max-items 40
+python3 content/journal-session-history/scripts/journal_history.py --source claude --project-filter my-project
 ```
 
 Use `--format json` when a structured intermediate is easier to analyze. Raw

@@ -57,7 +57,7 @@ import shutil
 import tempfile
 import uuid
 
-template = Path("skills/project-management/live-implementation-notes/assets/implementation-notes.template.html")
+template = Path("project-management/live-implementation-notes/assets/implementation-notes.template.html")
 notes_file = Path(tempfile.gettempdir()) / f"implementation-notes-{datetime.now():%Y%m%d-%H%M%S}-{uuid.uuid4().hex[:6]}.html"
 shutil.copyfile(template, notes_file)
 print(notes_file)

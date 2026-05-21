@@ -39,7 +39,7 @@ constraints.
 4. Convert the key to alpha with the bundled helper:
 
 ```bash
-python3 skills/media/transparent-image-alpha/scripts/make_alpha_from_chroma.py \
+python3 media/transparent-image-alpha/scripts/make_alpha_from_chroma.py \
   --input <source-keyed.png> \
   --out <final-transparent.png>
 ```
@@ -57,7 +57,7 @@ python3 skills/media/transparent-image-alpha/scripts/make_alpha_from_chroma.py \
 Retry with a 1 px matte contraction:
 
 ```bash
-python3 skills/media/transparent-image-alpha/scripts/make_alpha_from_chroma.py \
+python3 media/transparent-image-alpha/scripts/make_alpha_from_chroma.py \
   --input <source-keyed.png> \
   --out <final-transparent.png> \
   --edge-contract 1
@@ -67,7 +67,7 @@ Overwrite an existing output only when the user explicitly asked for
 replacement:
 
 ```bash
-python3 skills/media/transparent-image-alpha/scripts/make_alpha_from_chroma.py \
+python3 media/transparent-image-alpha/scripts/make_alpha_from_chroma.py \
   --input <source-keyed.png> \
   --out <final-transparent.png> \
   --force

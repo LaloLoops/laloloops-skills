@@ -53,9 +53,9 @@ Parsing policy:
 ## Override Options
 
 ```bash
-python3 skills/content/journal-session-history/scripts/journal_history.py --codex-root /path/to/sessions
-python3 skills/content/journal-session-history/scripts/journal_history.py --claude-root /path/to/projects
-python3 skills/content/journal-session-history/scripts/journal_history.py --source codex
-python3 skills/content/journal-session-history/scripts/journal_history.py --source claude
-python3 skills/content/journal-session-history/scripts/journal_history.py --project-filter my-project
+python3 content/journal-session-history/scripts/journal_history.py --codex-root /path/to/sessions
+python3 content/journal-session-history/scripts/journal_history.py --claude-root /path/to/projects
+python3 content/journal-session-history/scripts/journal_history.py --source codex
+python3 content/journal-session-history/scripts/journal_history.py --source claude
+python3 content/journal-session-history/scripts/journal_history.py --project-filter my-project
 ```
