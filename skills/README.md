@@ -31,6 +31,7 @@ maintaining progress trackers.
 
 Included skills:
 
+- `agent-comm`
 - `feature-planning-scaffold`
 - `live-implementation-notes`
 - `project-next-steps`

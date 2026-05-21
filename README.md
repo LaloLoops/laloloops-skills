@@ -65,6 +65,9 @@ to work on next.
 
 Included skills:
 
+- [Agent Comm](skills/project-management/agent-comm/SKILL.md) -
+  coordinates multiple agent sessions through shared files, status, and an
+  explicit approval gate.
 - [Feature Planning Scaffold](skills/project-management/feature-planning-scaffold/SKILL.md) -
   creates a planning directory with an implementation plan and progress tracker.
 - [Live Implementation Notes](skills/project-management/live-implementation-notes/SKILL.md) -
