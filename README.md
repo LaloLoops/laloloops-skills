@@ -1,4 +1,4 @@
-# Agent Skills
+# LaloLoops Agent Skills
 
 Portable, public-safe agent skills and supporting resources.
 
@@ -6,30 +6,50 @@ Each skill is a directory with a `SKILL.md` entry point and optional bundled
 resources such as `scripts/`, `references/`, `assets/`, and
 `agents/openai.yaml`. Category directories live directly at the repository root.
 
-## Install A Skill
+## Install For Claude Code
 
-Copy the full skill directory into the target agent's skills directory. Do not
-copy only `SKILL.md` when the skill has bundled resources.
+Copy the full skill directory into Claude Code's skills directory. Do not copy
+only `SKILL.md` when the skill has bundled resources.
+
+Use personal installation when you want the skill available in every Claude Code
+project:
 
 ```sh
-mkdir -p "$AGENT_SKILLS_DIR"
-cp -R <category>/<skill-name> "$AGENT_SKILLS_DIR/"
+mkdir -p "$HOME/.claude/skills"
+cp -R <category>/<skill-name> "$HOME/.claude/skills/"
 ```
 
 Example:
 
 ```sh
-mkdir -p "$HOME/.codex/skills"
-cp -R coordination/agent-comm "$HOME/.codex/skills/"
+mkdir -p "$HOME/.claude/skills"
+cp -R coordination/agent-comm "$HOME/.claude/skills/"
 ```
 
-For another agent, replace `$HOME/.codex/skills` with that agent's configured
-skills directory. If an agent supports repository-local skills, you can also
-point it at this repository or copy the desired skill folders into its local
-skill path.
+Use project installation when you want the skill available only in one project:
 
-After installing, restart or reload the agent if it does not discover new
-skills automatically.
+```sh
+mkdir -p /path/to/project/.claude/skills
+cp -R <category>/<skill-name> /path/to/project/.claude/skills/
+```
+
+To install every skill in this repository as personal Claude Code skills:
+
+```sh
+mkdir -p "$HOME/.claude/skills"
+for skill in content/* coordination/* git/* media/* project-management/*; do
+  [ -d "$skill" ] && cp -R "$skill" "$HOME/.claude/skills/"
+done
+```
+
+Claude Code uses the installed directory name as the slash command. For example,
+after installing `coordination/agent-comm`, invoke it directly with
+`/agent-comm` or let Claude load it automatically when your request matches the
+skill description.
+
+Claude Code watches existing skill directories for changes. If `~/.claude/skills`
+or `.claude/skills` did not exist when the current Claude Code session started,
+restart Claude Code once so it begins watching the new directory.
 
 ## Repository Layout
 
@@ -44,68 +64,329 @@ skills automatically.
 
 ## Skill Index
 
+Skills are prompt-driven. The "parameters" below are the useful details to put
+after the slash command or include in the request. Claude may also load a skill
+automatically when the request matches its description.
+
 ### `content/`
 
 Skills for turning development sessions, transcripts, or project activity into
 journals, summaries, and reusable content ideas.
 
-- [Journal Session Current](content/journal-session-current/SKILL.md): creates a
-  factual journal summary and content ideas from the current conversation or
-  provided notes.
-  Example: `Use journal-session-current to summarize this session and give me 3 content ideas.`
+#### [Journal Session Current](content/journal-session-current/SKILL.md)
 
-- [Journal Session History](content/journal-session-history/SKILL.md): scans
-  local agent session transcripts for a date or range and summarizes what
-  happened.
-  Example: `Use journal-session-history to summarize yesterday's agent work from local transcripts.`
+Creates a factual journal summary and reusable content ideas from the current
+conversation or provided notes.
+
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `mode` | `journal`, `quick`, `ideas`, or a custom output hint. |
+| `source` | Current conversation by default, or pasted notes/history digest. |
+| `focus` | Optional topic, audience, lesson, or content angle to bias ideas toward. |
+| `voice` | Optional style guide or tone request. Defaults to neutral and practical. |
+
+Produces: journal summary, key decisions, open threads, content ideas, reusable
+notes, and follow-up questions. In `journal` mode it outputs only the factual
+record.
+
+Example request:
+
+```text
+/journal-session-current mode=quick focus="agent coordination"
+Summarize this session and give me 3 content ideas.
+```
+
+Example output shape:
+
+```markdown
+# Journal Session Current
+
+Date: 2026-05-21
+Session focus: Renamed and reorganized a reusable agent skill collection.
+
+## 1. Journal Summary
+- ...
+
+## 2. Content Ideas
+1. ...
+```
+
+#### [Social Post Teardown](content/social-post-teardown/SKILL.md)
+
+Breaks down a single short-form social post into its big idea, structure, word
+choice, engagement drivers, and psychological tactics, then turns the pattern
+into a step-by-step replication template the user can apply to their own ideas.
+
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `post` | Required. Full text of the social post being analyzed. |
+| `platform` | Optional. `twitter`, `linkedin`, `instagram`, `tiktok`, `threads`, `reddit`, or similar. |
+| `context` | Optional. Author, audience, niche, or reported engagement numbers. |
+| `replicate_topic` | Optional. The user's own idea to express in the same style. |
+| `voice` | Optional. Tone or brand constraints to respect in the worked example. |
+| `depth` | `standard` by default. `quick` for sections 1-4 plus template. `deep` adds line-by-line annotation. |
+
+Produces: big-idea summary, structure map, word-choice analysis, engagement
+drivers, named psychological tactics with quoted spans, a reusable skeleton
+template, and an optional worked example in the user's voice.
+
+Example request:
+
+```text
+/social-post-teardown platform=linkedin depth=standard
+Tear this post down and show me how to write one like it.
+
+<paste the post>
+```
+
+#### [Journal Session History](content/journal-session-history/SKILL.md)
+
+Scans local Codex and Claude session transcripts for a date or range, then
+summarizes what happened without dumping raw transcript soup into your lap.
+
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `date` | Single date as `YYYY-MM-DD`. Defaults to today's local date. |
+| `date_from`, `date_to` | Inclusive date range. |
+| `source` | `all`, `codex`, or `claude`. |
+| `project_filter` | Optional substring to narrow Claude project paths. |
+| `max_items` | Optional cap when the transcript digest is too large. |
+| `format` | `markdown` by default; `json` when structured analysis is easier. |
+| `include_excerpts` | Include compact raw excerpts only when explicitly needed. |
+
+Bundled script:
+
+```sh
+python3 content/journal-session-history/scripts/journal_history.py \
+  --date 2026-05-21 \
+  --source all
+```
+
+Produces: executive summary, story briefs, lessons, and draft content starters
+grounded in transcript evidence.
+
+Example request:
+
+```text
+/journal-session-history date=2026-05-20 source=claude project_filter=laloloops
+Summarize the useful product/dev work from that day.
+```
 
 ### `coordination/`
 
 Skills for coordinating multiple agent sessions or handoffs through shared,
 inspectable state.
 
-- [Agent Comm](coordination/agent-comm/SKILL.md): coordinates two or more agent
-  sessions through `.agent-comm/` files, status updates, compact state, and an
-  explicit approval gate before risky actions.
-  Example: `Use agent-comm so one session prepares the deploy while another waits for approval and reports status.`
+#### [Agent Comm](coordination/agent-comm/SKILL.md)
+
+Coordinates two or more agent sessions through a shared `.agent-comm/` mailbox,
+status log, compact state file, and explicit approval gate before risky actions.
+
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `workspace` | Repository or filesystem path both sessions can access. |
+| `roles` | Which session coordinates and which executes, verifies, deploys, or observes. |
+| `phases` | Custom phase names, allowed actions, standby behavior, and terminal states. |
+| `approval_action` | Exact risky action that requires human approval. |
+| `approval_phrase` | Human-facing phrase or condition that unlocks the action. |
+| `poll_interval` | How often the executor should reread `state.json` while standing by. |
+| `redaction_rules` | Any project-specific data that must not appear in files or chat. |
+
+Produces:
+
+```text
+.agent-comm/
+├── inbox.md
+├── status.md
+└── state.json
+```
+
+Example request:
+
+```text
+/agent-comm workspace=. approval_action="production deploy"
+Set up one executor to prepare the deploy, stop at standby, and wait for my approval.
+```
 
 ### `git/`
 
 Skills for repository, pull request, review, CI, and merge workflows.
 
-- [PR Manage](git/pr-manage/SKILL.md): owns a pull request lifecycle from the
-  current branch through PR creation, review requests, CI fixes, feedback
-  handling, and merge when ready.
-  Example: `Use pr-manage to open a PR for this branch, request review, monitor CI, and merge when approved.`
+#### [PR Manage](git/pr-manage/SKILL.md)
+
+Owns a pull request lifecycle from the current branch through PR creation,
+review requests, CI fixes, feedback handling, and merge when ready.
+
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `base` | Target branch. Defaults to the repository default branch. |
+| `draft` | Whether to open as draft or ready for review. |
+| `reviewer` | Optional reviewer account or documented review trigger. |
+| `merge_when_ready` | Whether the agent should merge after checks and review pass. |
+| `merge_method` | Optional preference: squash, merge commit, or rebase. |
+| `GH_CMD` | Optional environment override for the GitHub CLI command. |
+
+Produces: PR URL, review/check status, commits for fixes when needed, merge
+result or clear blocker.
+
+Example request:
+
+```text
+/pr-manage base=main reviewer=@reviewer merge_when_ready=true
+Open a PR for this branch, request review, fix failing checks, and merge once approved.
+```
 
 ### `media/`
 
 Skills for generated media assets and post-processing workflows.
 
-- [Transparent Image Alpha](media/transparent-image-alpha/SKILL.md): turns a
-  flat chroma-key generated image into a validated transparent PNG or WebP using
-  the bundled helper script.
-  Example: `Use transparent-image-alpha to make this generated sticker a real transparent PNG.`
+#### [Transparent Image Alpha](media/transparent-image-alpha/SKILL.md)
+
+Turns a flat chroma-key generated image into a validated transparent PNG or WebP
+using the bundled helper script.
+
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `subject` | What the generated asset should contain. |
+| `style` | Optional art direction, composition, size, or padding. |
+| `key` | Chroma color. Defaults to `#00ff00`; use `#ff00ff` when green appears in the subject. |
+| `input` | Source keyed image path if the image already exists. |
+| `out` | Final `.png` or `.webp` path. |
+| `edge_contract` | Optional 1 px matte contraction for color fringes. |
+| `force` | Overwrite output only when explicitly requested. |
+
+Bundled script:
+
+```sh
+python3 media/transparent-image-alpha/scripts/make_alpha_from_chroma.py \
+  --input source-keyed.png \
+  --out final-transparent.png \
+  --key '#00ff00'
+```
+
+Produces: transparent PNG/WebP, source path, key color, and validation summary.
+
+Example request:
+
+```text
+/transparent-image-alpha subject="a tiny robot sticker" out=robot.png key=#00ff00
+Generate it on a flat key background, remove the key, and validate the alpha.
+```
 
 ### `project-management/`
 
 Skills for planning work, tracking implementation progress, and deciding what
 to work on next.
 
-- [Feature Planning Scaffold](project-management/feature-planning-scaffold/SKILL.md):
-  creates a repository-local planning directory with an implementation plan and
-  progress tracker for a feature, bug fix, refactor, or investigation.
-  Example: `Use feature-planning-scaffold to create a plan for the billing retry refactor.`
+#### [Feature Planning Scaffold](project-management/feature-planning-scaffold/SKILL.md)
 
-- [Live Implementation Notes](project-management/live-implementation-notes/SKILL.md):
-  maintains a timestamped implementation-notes HTML file outside the repository
-  while coding work is happening.
-  Example: `Use live-implementation-notes while implementing this so I can inspect progress as you work.`
+Creates a repository-local planning directory with an implementation plan and
+progress tracker for a feature, bug fix, refactor, or investigation.
 
-- [Project Next Steps](project-management/project-next-steps/SKILL.md): performs
-  a read-only project sweep and recommends prioritized next work from issues,
-  PRs, commits, planning files, and docs.
-  Example: `Use project-next-steps to tell me what we should tackle next, with evidence.`
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `title` | Work item title or short description. |
+| `reference` | Optional issue, ticket, PR, or external reference. |
+| `planning_root` | Directory root. Defaults to `planning/`. |
+| `scope` | Optional in-scope and out-of-scope hints. |
+| `priority` | Optional priority if the project tracks it. |
+
+Produces:
+
+```text
+planning/<date>_<slug>/
+├── 000_<slug>_implementation_plan.md
+└── PROGRESS.md
+```
+
+Example request:
+
+```text
+/feature-planning-scaffold title="billing retry refactor" reference="#123"
+Create a plan with scope, phases, risks, and verification gates.
+```
+
+#### [Live Implementation Notes](project-management/live-implementation-notes/SKILL.md)
+
+Maintains a timestamped implementation-notes HTML file outside the repository
+while coding work is happening.
+
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `task` | What implementation work should be tracked. |
+| `scope` | Optional boundaries, assumptions, or known risks. |
+| `notes_path` | Optional existing notes file. Defaults to a new temp HTML file. |
+| `update_triggers` | Optional events that should force a notes update. |
+
+Produces: a self-contained HTML notes file with overview, status, decisions,
+changes, tradeoffs, verification, and handoff sections.
+
+Example request:
+
+```text
+/live-implementation-notes task="refactor the export flow"
+Track decisions, changed files, verification, and any handoff notes while you work.
+```
+
+Example output:
+
+```text
+Created live implementation notes: /tmp/implementation-notes-20260521-143000-a1b2c3.html
+```
+
+#### [Project Next Steps](project-management/project-next-steps/SKILL.md)
+
+Performs a read-only project sweep and recommends prioritized next work from
+issues, PRs, commits, planning files, and docs.
+
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `focus` | Optional filter such as `bug`, `ci`, `docs`, `ui`, issue number, PR, or keyword. |
+| `evidence_sources` | Optional hint to inspect issues, PRs, planning files, commits, or docs. |
+| `candidate_count` | Desired number of recommendations. Defaults to 3-5. |
+| `size_bias` | Optional preference for small wins, in-flight work, or larger roadmap items. |
+
+Produces: project snapshot, flagged concerns, ranked recommendations, evidence,
+blockers, suggested action, and rough size.
+
+Example request:
+
+```text
+/project-next-steps focus=ci candidate_count=3
+Tell me what we should tackle next and cite the evidence.
+```
+
+Example output shape:
+
+```markdown
+# Project Next Steps - 2026-05-21
+
+## Snapshot
+- Branch: main (clean)
+
+## Recommended Next Steps
+### 1. Fix failing export check - ci - score 8
+- **Evidence**: PR #42, failing workflow link
+- **Suggested action**: fix directly
+```
 
 ## Public-Safe Scope
 
