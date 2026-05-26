@@ -27,11 +27,13 @@ python3 content/journal-session-history/scripts/journal_history.py --date-from Y
 python3 content/journal-session-history/scripts/journal_history.py --date-from YYYY-MM-DD --source all
 ```
 
-If output is large, narrow it:
+`--source all` covers Codex, Claude Code, and Hermes agent sessions. Narrow to
+one source when needed:
 
 ```bash
 python3 content/journal-session-history/scripts/journal_history.py --source codex --max-items 40
 python3 content/journal-session-history/scripts/journal_history.py --source claude --project-filter my-project
+python3 content/journal-session-history/scripts/journal_history.py --source hermes
 ```
 
 Use `--format json` when a structured intermediate is easier to analyze. Raw
@@ -93,7 +95,7 @@ Sources: <Codex/Claude counts>
 
 ## Bundled Resources
 
-- `scripts/journal_history.py`: scans local Codex and Claude JSONL sessions for
-  a date range and emits Markdown or JSON.
+- `scripts/journal_history.py`: scans local Codex, Claude Code, and Hermes agent
+  sessions for a date range and emits Markdown or JSON.
 - `references/session-sources.md`: default transcript locations and schema
   notes.

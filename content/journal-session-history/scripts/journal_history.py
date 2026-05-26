@@ -142,6 +142,23 @@ def discover_claude(root: Path) -> list[Path]:
     return sorted(root.glob("*/*.jsonl")) if root.exists() else []
 
 
+def discover_hermes(root: Path) -> list[tuple[Path, str]]:
+    """Return (path, kind) pairs for Hermes sessions, deduped by session id.
+
+    Full ``session_*.json`` records are preferred because they hold the
+    complete message list. Standalone ``*.jsonl`` logs are included only when no
+    full record exists for the same session id.
+    """
+    if not root.exists():
+        return []
+    found: dict[str, tuple[Path, str]] = {}
+    for path in sorted(root.glob("session_*.json")):
+        found[path.stem[len("session_") :]] = (path, "json")
+    for path in sorted(root.glob("*.jsonl")):
+        found.setdefault(path.stem, (path, "jsonl"))
+    return [found[key] for key in sorted(found)]
+
+
 def parse_jsonl(path: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     try:
@@ -225,6 +242,80 @@ def parse_claude_file(path: Path, start: date, end: date, digest: Digest, projec
                             note_command(command, digest)
 
 
+def hermes_session_dates(obj: dict[str, Any] | None, path: Path) -> tuple[date | None, date | None]:
+    if isinstance(obj, dict):
+        start = date_from_timestamp(str(obj.get("session_start") or ""))
+        end = date_from_timestamp(str(obj.get("last_updated") or "")) or start
+        return start or end, end or start
+    match = re.match(r"(\d{4})(\d{2})(\d{2})_", path.stem)
+    if match:
+        day = parse_date(f"{match.group(1)}-{match.group(2)}-{match.group(3)}")
+        return day, day
+    return None, None
+
+
+def add_hermes_row(digest: Digest, row: dict[str, Any], timestamp: str) -> None:
+    role = str(row.get("role") or "")
+    text = text_from_value(row.get("content"))
+    if text and role in {"user", "assistant"}:
+        add_item(digest, "hermes", timestamp, role, text)
+
+    for call in row.get("tool_calls") or []:
+        if not isinstance(call, dict):
+            continue
+        function = call.get("function") if isinstance(call.get("function"), dict) else {}
+        name = str(function.get("name") or call.get("name") or "tool")
+        digest.tools[name] += 1
+        raw_args = function.get("arguments")
+        args: Any = {}
+        if isinstance(raw_args, str):
+            try:
+                args = json.loads(raw_args)
+            except json.JSONDecodeError:
+                args = {}
+        elif isinstance(raw_args, dict):
+            args = raw_args
+        if isinstance(args, dict):
+            command = args.get("command") or args.get("cmd")
+            if isinstance(command, str):
+                note_command(command, digest)
+            for key in ("path", "file_path"):
+                value = args.get(key)
+                if isinstance(value, str) and value:
+                    digest.paths[Path(value).name or "[unnamed]"] += 1
+
+
+def parse_hermes_file(path: Path, kind: str, start: date, end: date, digest: Digest) -> None:
+    if kind == "json":
+        try:
+            obj = json.loads(path.read_text(errors="replace"))
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"Warning: could not read {path}: {exc}", file=sys.stderr)
+            return
+        if not isinstance(obj, dict):
+            return
+        messages = obj.get("messages")
+        if not isinstance(messages, list):
+            return
+        # Full records carry no per-message timestamps, so include the whole
+        # session when its [start, last_updated] window overlaps the range.
+        s_start, s_end = hermes_session_dates(obj, path)
+        if not (s_start and s_end and s_start <= end and s_end >= start):
+            return
+        default_ts = str(obj.get("last_updated") or obj.get("session_start") or "")
+        for row in messages:
+            if isinstance(row, dict):
+                add_hermes_row(digest, row, timestamp_for(row) or default_ts)
+        return
+
+    session_date, _ = hermes_session_dates(None, path)
+    for row in parse_jsonl(path):
+        row_date = date_from_timestamp(timestamp_for(row)) or session_date
+        if not (row_date and start <= row_date <= end):
+            continue
+        add_hermes_row(digest, row, timestamp_for(row) or (str(session_date) if session_date else ""))
+
+
 def build_digest(args: argparse.Namespace) -> Digest:
     today = date.today()
     if args.date:
@@ -246,6 +337,11 @@ def build_digest(args: argparse.Namespace) -> Digest:
         claude_root = Path(args.claude_root).expanduser()
         for path in discover_claude(claude_root):
             parse_claude_file(path, start, end, digest, args.project_filter)
+
+    if args.source in {"all", "hermes"}:
+        hermes_root = Path(args.hermes_root).expanduser()
+        for path, kind in discover_hermes(hermes_root):
+            parse_hermes_file(path, kind, start, end, digest)
 
     digest.items.sort(key=lambda item: item.timestamp)
     if args.max_items and len(digest.items) > args.max_items:
@@ -325,9 +421,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--date", help="Single date as YYYY-MM-DD.")
     parser.add_argument("--date-from", help="Inclusive start date as YYYY-MM-DD.")
     parser.add_argument("--date-to", help="Inclusive end date as YYYY-MM-DD.")
-    parser.add_argument("--source", choices=["all", "codex", "claude"], default="all")
+    parser.add_argument("--source", choices=["all", "codex", "claude", "hermes"], default="all")
     parser.add_argument("--codex-root", default=str(default_codex))
     parser.add_argument("--claude-root", default=str(Path.home() / ".claude" / "projects"))
+    parser.add_argument("--hermes-root", default=str(Path.home() / ".hermes" / "sessions"))
     parser.add_argument("--project-filter", help="Substring filter for Claude project paths.")
     parser.add_argument("--max-items", type=int, default=80)
     parser.add_argument(

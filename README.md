@@ -145,8 +145,9 @@ Tear this post down and show me how to write one like it.
 
 #### [Journal Session History](content/journal-session-history/SKILL.md)
 
-Scans local Codex and Claude session transcripts for a date or range, then
-summarizes what happened without dumping raw transcript soup into your lap.
+Scans local Codex, Claude Code, and Hermes agent session transcripts for a date
+or range, then summarizes what happened without dumping raw transcript soup into
+your lap.
 
 Inputs:
 
@@ -154,7 +155,7 @@ Inputs:
 | --- | --- |
 | `date` | Single date as `YYYY-MM-DD`. Defaults to today's local date. |
 | `date_from`, `date_to` | Inclusive date range. |
-| `source` | `all`, `codex`, or `claude`. |
+| `source` | `all`, `codex`, `claude`, or `hermes`. |
 | `project_filter` | Optional substring to narrow Claude project paths. |
 | `max_items` | Optional cap when the transcript digest is too large. |
 | `format` | `markdown` by default; `json` when structured analysis is easier. |
