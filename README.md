@@ -51,6 +51,37 @@ Claude Code watches existing skill directories for changes. If `~/.claude/skills
 or `.claude/skills` did not exist when the current Claude Code session started,
 restart Claude Code once so it begins watching the new directory.
 
+## Install For Codex
+
+Copy the full skill directory into Codex's skills directory. Do not copy only
+`SKILL.md` when the skill has bundled resources.
+
+Use personal installation when you want the skill available in every Codex
+session:
+
+```sh
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -R <category>/<skill-name> "${CODEX_HOME:-$HOME/.codex}/skills/"
+```
+
+Example:
+
+```sh
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -R media/ascii-diagram "${CODEX_HOME:-$HOME/.codex}/skills/"
+```
+
+To install every skill in this repository as personal Codex skills:
+
+```sh
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+for skill in content/* coordination/* git/* media/* project-management/*; do
+  [ -d "$skill" ] && cp -R "$skill" "${CODEX_HOME:-$HOME/.codex}/skills/"
+done
+```
+
+Restart Codex after adding a new global skill so the next session discovers it.
+
 ## Repository Layout
 
 ```text
@@ -65,8 +96,8 @@ restart Claude Code once so it begins watching the new directory.
 ## Skill Index
 
 Skills are prompt-driven. The "parameters" below are the useful details to put
-after the slash command or include in the request. Claude may also load a skill
-automatically when the request matches its description.
+after the slash command or include in the request. Claude Code or Codex may also
+load a skill automatically when the request matches its description.
 
 ### `content/`
 
@@ -250,6 +281,39 @@ Open a PR for this branch, request review, fix failing checks, and merge once ap
 ### `media/`
 
 Skills for generated media assets and post-processing workflows.
+
+#### [ASCII Diagram](media/ascii-diagram/SKILL.md)
+
+Renders tidy ASCII or Unicode box-and-arrow diagrams from Graph::Easy DSL using
+the bundled wrapper script.
+
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `diagram` | Topology, architecture, flowchart, dependency graph, or state-machine content to render. |
+| `format` | Optional output format: `boxart` by default, `ascii` for 7-bit output, or `svg` / `graphviz` if requested. |
+| `flow` | Optional layout direction: `east`, `west`, `down`, or `up`. |
+| `labels` | Optional edge labels, protocol names, step numbers, or channel distinctions. |
+
+Bundled script:
+
+```sh
+media/ascii-diagram/scripts/graph-easy.sh <<'EOF'
+graph { flow: east; }
+[ Client ] -- request --> [ API ] -- query --> [ Database ]
+EOF
+```
+
+Produces: rendered diagram output suitable for fenced Markdown code blocks,
+plus the Graph::Easy DSL if useful for later edits.
+
+Example request:
+
+```text
+/ascii-diagram format=boxart flow=down
+Draw the signup flow from landing page to account activation.
+```
 
 #### [Transparent Image Alpha](media/transparent-image-alpha/SKILL.md)
 
