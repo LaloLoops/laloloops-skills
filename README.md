@@ -99,6 +99,25 @@ Skills are prompt-driven. The "parameters" below are the useful details to put
 after the slash command or include in the request. Claude Code or Codex may also
 load a skill automatically when the request matches its description.
 
+Jump to a category or skill:
+
+- [`content/`](#content)
+  - [Journal Session Current](#journal-session-current)
+  - [Social Post Teardown](#social-post-teardown)
+  - [Journal Session History](#journal-session-history)
+- [`coordination/`](#coordination)
+  - [Agent Comm](#agent-comm)
+  - [Agent Session Launcher](#agent-session-launcher)
+- [`git/`](#git)
+  - [PR Manage](#pr-manage)
+- [`media/`](#media)
+  - [ASCII Diagram](#ascii-diagram)
+  - [Transparent Image Alpha](#transparent-image-alpha)
+- [`project-management/`](#project-management)
+  - [Feature Planning Scaffold](#feature-planning-scaffold)
+  - [Live Implementation Notes](#live-implementation-notes)
+  - [Project Next Steps](#project-next-steps)
+
 ### `content/`
 
 Skills for turning development sessions, transcripts, or project activity into
