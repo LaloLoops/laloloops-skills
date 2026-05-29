@@ -248,6 +248,34 @@ Example request:
 Set up one executor to prepare the deploy, stop at standby, and wait for my approval.
 ```
 
+#### [Agent Session Launcher](coordination/agent-session-launcher/SKILL.md)
+
+Launches Claude Code or Codex in a chosen repository, usually inside tmux,
+after asking a short pre-launch checklist for agent, session mode, permission
+posture, workspace, and task prompt.
+
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `agent` | `claude` or `codex`. Ask if not specified. |
+| `mode` | `interactive-tmux` or `inline`. Ask if not specified. |
+| `permissions` | `normal`, `more-automatic`, or `skip-permissions`. Make the trade-off explicit. |
+| `workspace` | Repository or folder path to launch inside. |
+| `prompt` | Exact task to run in the launched agent session. |
+| `artifact` | Optional file output the launched agent should produce. |
+| `gui_terminal` | Optional. Only if the user explicitly wants a GUI terminal window opened. |
+
+Produces: a launched agent session, a verified running/waiting/completed state,
+and an attach command such as `tmux attach -t <session>`.
+
+Example request:
+
+```text
+/agent-session-launcher agent=claude mode=interactive-tmux permissions=normal workspace=.
+Start Claude Code in tmux, give it the prompt below, and tell me how to reattach.
+```
+
 ### `git/`
 
 Skills for repository, pull request, review, CI, and merge workflows.
