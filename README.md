@@ -6,6 +6,29 @@ Each skill is a directory with a `SKILL.md` entry point and optional bundled
 resources such as `scripts/`, `references/`, `assets/`, and
 `agents/openai.yaml`. Category directories live directly at the repository root.
 
+## Contents
+
+- [Install For Claude Code](#install-for-claude-code)
+- [Install For Codex](#install-for-codex)
+- [Repository Layout](#repository-layout)
+- [Skill Index](#skill-index)
+  - [`content/`](#content)
+    - [Journal Session Current](#journal-session-current)
+    - [Social Post Teardown](#social-post-teardown)
+    - [Journal Session History](#journal-session-history)
+  - [`coordination/`](#coordination)
+    - [Agent Comm](#agent-comm)
+    - [Agent Session Launcher](#agent-session-launcher)
+  - [`git/`](#git)
+    - [PR Manage](#pr-manage)
+  - [`media/`](#media)
+    - [ASCII Diagram](#ascii-diagram)
+    - [Transparent Image Alpha](#transparent-image-alpha)
+  - [`project-management/`](#project-management)
+    - [Feature Planning Scaffold](#feature-planning-scaffold)
+    - [Live Implementation Notes](#live-implementation-notes)
+    - [Project Next Steps](#project-next-steps)
+
 ## Install For Claude Code
 
 Copy the full skill directory into Claude Code's skills directory. Do not copy
@@ -98,25 +121,6 @@ Restart Codex after adding a new global skill so the next session discovers it.
 Skills are prompt-driven. The "parameters" below are the useful details to put
 after the slash command or include in the request. Claude Code or Codex may also
 load a skill automatically when the request matches its description.
-
-Jump to a category or skill:
-
-- [`content/`](#content)
-  - [Journal Session Current](#journal-session-current)
-  - [Social Post Teardown](#social-post-teardown)
-  - [Journal Session History](#journal-session-history)
-- [`coordination/`](#coordination)
-  - [Agent Comm](#agent-comm)
-  - [Agent Session Launcher](#agent-session-launcher)
-- [`git/`](#git)
-  - [PR Manage](#pr-manage)
-- [`media/`](#media)
-  - [ASCII Diagram](#ascii-diagram)
-  - [Transparent Image Alpha](#transparent-image-alpha)
-- [`project-management/`](#project-management)
-  - [Feature Planning Scaffold](#feature-planning-scaffold)
-  - [Live Implementation Notes](#live-implementation-notes)
-  - [Project Next Steps](#project-next-steps)
 
 ### `content/`
 
