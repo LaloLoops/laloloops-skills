@@ -129,6 +129,8 @@ journals, summaries, and reusable content ideas.
 
 #### [Journal Session Current](content/journal-session-current/SKILL.md)
 
+![Journal Session Current banner](assets/images/journal-session-current-banner.png)
+
 Creates a factual journal summary and reusable content ideas from the current
 conversation or provided notes.
 
@@ -169,6 +171,8 @@ Session focus: Renamed and reorganized a reusable agent skill collection.
 
 #### [Social Post Teardown](content/social-post-teardown/SKILL.md)
 
+![Social Post Teardown banner](assets/images/social-post-teardown-banner.png)
+
 Breaks down a single short-form social post into its big idea, structure, word
 choice, engagement drivers, and psychological tactics, then turns the pattern
 into a step-by-step replication template the user can apply to their own ideas.
@@ -198,6 +202,8 @@ Tear this post down and show me how to write one like it.
 ```
 
 #### [Journal Session History](content/journal-session-history/SKILL.md)
+
+![Journal Session History banner](assets/images/journal-session-history-banner.png)
 
 Scans local Codex, Claude Code, and Hermes agent session transcripts for a date
 or range, then summarizes what happened without dumping raw transcript soup into
@@ -240,6 +246,8 @@ inspectable state.
 
 #### [Agent Comm](coordination/agent-comm/SKILL.md)
 
+![Agent Comm banner](assets/images/agent-comm-banner.png)
+
 Coordinates two or more agent sessions through a shared `.agent-comm/` mailbox,
 status log, compact state file, and explicit approval gate before risky actions.
 
@@ -273,6 +281,8 @@ Set up one executor to prepare the deploy, stop at standby, and wait for my appr
 
 #### [Agent Session Launcher](coordination/agent-session-launcher/SKILL.md)
 
+![Agent Session Launcher banner](assets/images/agent-session-launcher-banner.png)
+
 Launches Claude Code or Codex in a chosen repository, usually inside tmux,
 after asking a short pre-launch checklist for agent, session mode, permission
 posture, workspace, and task prompt.
@@ -305,6 +315,8 @@ Skills for repository, pull request, review, CI, and merge workflows.
 
 #### [PR Manage](git/pr-manage/SKILL.md)
 
+![PR Manage banner](assets/images/pr-manage-banner.png)
+
 Owns a pull request lifecycle from the current branch through PR creation,
 review requests, CI fixes, feedback handling, and merge when ready.
 
@@ -334,6 +346,8 @@ Open a PR for this branch, request review, fix failing checks, and merge once ap
 Skills for generated media assets and post-processing workflows.
 
 #### [ASCII Diagram](media/ascii-diagram/SKILL.md)
+
+![ASCII Diagram banner](assets/images/ascii-diagram-banner.png)
 
 Renders tidy ASCII or Unicode box-and-arrow diagrams from Graph::Easy DSL using
 the bundled wrapper script.
@@ -367,6 +381,8 @@ Draw the signup flow from landing page to account activation.
 ```
 
 #### [Transparent Image Alpha](media/transparent-image-alpha/SKILL.md)
+
+![Transparent Image Alpha banner](assets/images/transparent-image-alpha-banner.png)
 
 Turns a flat chroma-key generated image into a validated transparent PNG or WebP
 using the bundled helper script.
@@ -408,6 +424,8 @@ to work on next.
 
 #### [Feature Planning Scaffold](project-management/feature-planning-scaffold/SKILL.md)
 
+![Feature Planning Scaffold banner](assets/images/feature-planning-scaffold-banner.png)
+
 Creates a repository-local planning directory with an implementation plan and
 progress tracker for a feature, bug fix, refactor, or investigation.
 
@@ -438,6 +456,8 @@ Create a plan with scope, phases, risks, and verification gates.
 
 #### [Live Implementation Notes](project-management/live-implementation-notes/SKILL.md)
 
+![Live Implementation Notes banner](assets/images/live-implementation-notes-banner.png)
+
 Maintains a timestamped implementation-notes HTML file outside the repository
 while coding work is happening.
 
@@ -467,6 +487,8 @@ Created live implementation notes: /tmp/implementation-notes-20260521-143000-a1b
 ```
 
 #### [Project Next Steps](project-management/project-next-steps/SKILL.md)
+
+![Project Next Steps banner](assets/images/project-next-steps-banner.png)
 
 Performs a read-only project sweep and recommends prioritized next work from
 issues, PRs, commits, planning files, and docs.
