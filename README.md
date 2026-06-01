@@ -10,6 +10,7 @@ resources such as `scripts/`, `references/`, `assets/`, and
 
 - [Install For Claude Code](#install-for-claude-code)
 - [Install For Codex](#install-for-codex)
+- [Install For Agents](#install-for-agents)
 - [Repository Layout](#repository-layout)
 - [Skill Index](#skill-index)
   - [`content/`](#content)
@@ -19,6 +20,7 @@ resources such as `scripts/`, `references/`, `assets/`, and
   - [`coordination/`](#coordination)
     - [Agent Comm](#agent-comm)
     - [Agent Session Launcher](#agent-session-launcher)
+    - [cmux CLI](#cmux-cli)
   - [`git/`](#git)
     - [PR Manage](#pr-manage)
   - [`media/`](#media)
@@ -104,6 +106,32 @@ done
 ```
 
 Restart Codex after adding a new global skill so the next session discovers it.
+
+## Install For Agents
+
+Copy the full skill directory into the shared agent skills directory when you
+want a skill available to local agents that discover `~/.agents/skills`:
+
+```sh
+mkdir -p "$HOME/.agents/skills"
+cp -R <category>/<skill-name> "$HOME/.agents/skills/"
+```
+
+Example:
+
+```sh
+mkdir -p "$HOME/.agents/skills"
+cp -R coordination/cmux "$HOME/.agents/skills/"
+```
+
+To install every skill in this repository as shared local agent skills:
+
+```sh
+mkdir -p "$HOME/.agents/skills"
+for skill in content/* coordination/* git/* media/* project-management/*; do
+  [ -d "$skill" ] && cp -R "$skill" "$HOME/.agents/skills/"
+done
+```
 
 ## Repository Layout
 
@@ -307,6 +335,40 @@ Example request:
 ```text
 /agent-session-launcher agent=claude mode=interactive-tmux permissions=normal workspace=.
 Start Claude Code in tmux, give it the prompt below, and tell me how to reattach.
+```
+
+#### [cmux CLI](coordination/cmux/SKILL.md)
+
+![cmux CLI banner](assets/images/cmux-cli-banner.png)
+
+Operates the `cmux` CLI for deterministic control of windows, workspaces,
+panes, terminal/browser surfaces, focus, moves, reorders, visual flashes,
+surface health checks, and safe settings reloads.
+
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `scope` | Caller workspace by default, or an explicit window/workspace/pane/surface handle. |
+| `action` | Inspect, create, focus, move, reorder, split off, flash, health check, or settings change. |
+| `target` | Optional cmux handle such as `window:1`, `workspace:2`, `pane:3`, or `surface:4`. |
+| `focus` | Whether the created or moved target should become active. Defaults to focus-neutral. |
+| `settings_path` | Optional `cmux.json` key/path to inspect or edit. |
+
+Bundled references:
+
+```text
+coordination/cmux/references/
+├── routing-and-health.md
+├── settings.md
+└── topology.md
+```
+
+Example request:
+
+```text
+/cmux action="create browser surface" scope="current workspace"
+Open the local preview in a new right-side cmux surface, keep the current terminal focused, then flash the preview.
 ```
 
 ### `git/`

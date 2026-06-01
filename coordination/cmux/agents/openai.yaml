@@ -1,0 +1,4 @@
+interface:
+  display_name: "cmux CLI"
+  short_description: "Control cmux panes, workspaces, and routing"
+  default_prompt: "Use $cmux to inspect and control cmux windows, workspaces, panes, surfaces, focus, routing, and visual confirmation from the CLI."
