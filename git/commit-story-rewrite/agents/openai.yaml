@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commit Story Rewrite"
+  short_description: "Rewrite branches into semantic commit stacks"
+  default_prompt: "Use $commit-story-rewrite to reorganize this branch into a clean semantic commit story."

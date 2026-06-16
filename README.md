@@ -22,6 +22,7 @@ resources such as `scripts/`, `references/`, `assets/`, and
     - [Agent Session Launcher](#agent-session-launcher)
     - [cmux CLI](#cmux-cli)
   - [`git/`](#git)
+    - [Commit Story Rewrite](#commit-story-rewrite)
     - [PR Manage](#pr-manage)
   - [`media/`](#media)
     - [ASCII Diagram](#ascii-diagram)
@@ -374,6 +375,34 @@ Open the local preview in a new right-side cmux surface, keep the current termin
 ### `git/`
 
 Skills for repository, pull request, review, CI, and merge workflows.
+
+#### [Commit Story Rewrite](git/commit-story-rewrite/SKILL.md)
+
+![Commit Story Rewrite banner](assets/images/commit-story-rewrite-banner.png)
+
+Rewrites an existing Git branch into a clean, reviewer-friendly semantic
+commit stack while preserving the final tree.
+
+Inputs:
+
+| Parameter | Meaning |
+| --- | --- |
+| `base` | Optional base branch or merge base hint. Defaults to the repository's main branch. |
+| `story` | Optional target commit sequence, grouping, or review narrative. |
+| `scope` | Optional files, commits, or feature areas to include in the rewrite. |
+| `preserve_dirty` | Keep unrelated local work out of the rewritten stack. Enabled by default. |
+| `push` | Force-push only when explicitly requested and after validation. |
+
+Produces: local backup branch, rewritten semantic commit stack, net-equivalence
+check against the original tip, validation summary, and force-push status when
+requested.
+
+Example request:
+
+```text
+/commit-story-rewrite story="schema, backend behavior, UI wiring, tests"
+Rewrite this branch into a clean review stack, fold fix commits into the commits they correct, and preserve the final tree.
+```
 
 #### [PR Manage](git/pr-manage/SKILL.md)
 
